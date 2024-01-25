@@ -1,0 +1,22 @@
+[shor_links]
+link_id_len = 5
+base_url = "http://127.0.0.1:8000"
+
+[db] # for sqlite
+type = "sqlite"
+name = 'db/db.sqlite'
+autoflush = false
+show_echo = true
+
+#[db] # for postgres
+#type = "postgresql"
+#connector = "asyncpg"
+#host_and_port = "postgres"
+#name = "news_parser"
+#autiflush=false
+#login = "postgres"make
+#password = "superpass"
+#show_echo = true  # if enable shows all SQL queries and results
+#pool_size=5
+#max_overflow=10
+
