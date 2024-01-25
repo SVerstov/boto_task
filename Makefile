@@ -1,9 +1,9 @@
-.PHONY: init migrate migrations downgrade
+.PHONY: init migrate migrations downgrade run
 
 
 init:
-	poetry install --no-root
 	poetry shell
+	poetry install --no-root
 
 
 migrate:
@@ -15,3 +15,6 @@ migrations:
 
 downgrade:
 	poetry run alembic downgrade -1
+
+run:
+	poetry run python main.py
