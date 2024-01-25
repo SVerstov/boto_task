@@ -17,6 +17,7 @@ class ShortLink(Base):
         nullable=False,
     )
     counter: Mapped[int] = mc(default=0)
+    redirect_code: Mapped[int] = mc(default=301)
 
     def to_json(self):
         return {
@@ -25,5 +26,6 @@ class ShortLink(Base):
             "ful_link": self.full_link,
             "created_by_ip": self.created_by_ip,
             "created_at": self.created_at,
-            "counter": self.counter
+            "counter": self.counter,
+            "redirect_code": self.redirect_code,
         }

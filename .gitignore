@@ -279,3 +279,4 @@ fabric.properties
 # Especially for the project
 
 config/*.toml
+db.sqlite
