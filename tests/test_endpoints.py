@@ -84,3 +84,11 @@ async def test_get_all(client: TestClient, create_10_links):
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 10
+
+
+@pytest.mark.asyncio
+async def test_create_bad_url(client: TestClient, create_10_links):
+    link_params = {"url": "google.com", "status_code": 301}
+    response = client.post("/api/links/create", json=link_params)
+    assert response.status_code == 422
+
