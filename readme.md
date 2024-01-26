@@ -2,7 +2,8 @@
 
 Testing task for **Boto** company. URL shortener with the ability to edit and delete links.
 
-The code contains my developments from other my projects, such as **logging system**, **configuration system** and data access object.
+The code contains my developments from other my projects, such as **logging system**, **configuration system** and data
+access object.
 Some of them may seem excessive for this small project, but they will be very usefully if the project grows.
 
 By default, the project uses `sqlite`, but you can change it to `postgres` in the config.
@@ -44,6 +45,12 @@ Uses pytest:
 
 ```
 make test
+```
+
+or
+
+```
+pytest
 ```
 
 # Logging
