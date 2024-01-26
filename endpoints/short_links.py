@@ -1,7 +1,7 @@
 from fastapi import Request, Depends, HTTPException
 from fastapi import status, APIRouter
 from fastapi.responses import JSONResponse, RedirectResponse, Response
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl, validator, field_validator
 
 from config import Config
 from db import ShortLink
@@ -12,14 +12,21 @@ router = APIRouter()
 
 
 class LinkCreate(BaseModel):
-    url: str
+    url: HttpUrl = 'http://example.com'
     status_code: int = 301
 
+    @field_validator('url')
+    def convert_url_to_str(cls, value):
+        return str(value)
 
 class LinkUpdate(BaseModel):
-    url: str | None
+    url: HttpUrl | None
     status_code: int | None
 
+    @field_validator('url')
+    def convert_url_to_str(cls, value):
+        if value:
+            return str(value)
 
 @router.post("/api/links/create")
 async def create_new_link(
@@ -84,4 +91,3 @@ async def short_link_redirect(link_id: str,
         return RedirectResponse(status_code=link_obj.status_code, url=link_obj.url)
     else:
         raise HTTPException(status_code=404, detail="Link not found")
-

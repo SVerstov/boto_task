@@ -12,7 +12,13 @@ from endpoints.utils import get_dao
 from main import app
 from tests.utils import create_tables, drop_all_tables
 
-engine = create_async_engine('sqlite+aiosqlite:///:memory:')
+if os.getcwd().endswith("/tests/"):
+    conf_path = Path("config/t_config.toml")
+else:
+    conf_path = Path(os.getcwd(), "tests/config/t_config.toml")
+test_config = Config(conf_path)
+
+engine = create_async_engine(test_config.db.uri)
 testing_sessionmaker = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
@@ -24,11 +30,7 @@ testing_sessionmaker = async_sessionmaker(
 
 @pytest.fixture(scope="session")
 def config() -> Config:
-    if os.getcwd().endswith("/tests/"):
-        conf_path = Path("config/t_config.toml")
-    else:
-        conf_path = Path(os.getcwd(), "tests/config/t_config.toml")
-    return Config(conf_path)
+    return test_config
 
 
 @pytest_asyncio.fixture(autouse=True)
@@ -51,10 +53,16 @@ def client() -> TestClient:
     return TestClient(app)
 
 
-async def override_get_dao() -> DAO:
+async def override_get_dao():
     session = testing_sessionmaker()
     try:
         yield DAO(session)
     finally:
         await session.commit()
         await session.close()
+
+
+@pytest_asyncio.fixture()
+async def dao() -> DAO:
+    async for dao_instance in override_get_dao():
+        yield dao_instance
