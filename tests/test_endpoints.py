@@ -54,3 +54,9 @@ async def test_delete_link(client: TestClient, google_link_id: str):
 
     response = client.get(f"/l/{google_link_id}")
     assert response.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_not_found(client: TestClient):
+    response = client.get('/l/ABCD')
+    assert response.status_code == 404
