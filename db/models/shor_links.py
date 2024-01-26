@@ -8,7 +8,7 @@ class ShortLink(Base):
     __tablename__ = "short_links"
     id: Mapped[int] = mc(Integer, primary_key=True)
     link_id: Mapped[str] = mc(index=True, unique=True)
-    full_link: Mapped[str | None]
+    url: Mapped[str | None]
     created_by_ip: Mapped[str | None]
     created_at: Mapped[datetime] = mc(
         DateTime,
@@ -17,15 +17,15 @@ class ShortLink(Base):
         nullable=False,
     )
     counter: Mapped[int] = mc(default=0)
-    redirect_code: Mapped[int] = mc(default=301)
+    status_code: Mapped[int] = mc(default=301)
 
     def to_json(self):
         return {
             "id": self.id,
             "link_id": self.link_id,
-            "ful_link": self.full_link,
+            "url": self.url,
             "created_by_ip": self.created_by_ip,
             "created_at": self.created_at,
             "counter": self.counter,
-            "redirect_code": self.redirect_code,
+            "status_code": self.status_code,
         }
