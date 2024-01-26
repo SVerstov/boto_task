@@ -5,6 +5,7 @@ from fastapi import Request
 
 from config import Config
 from db import DAO, ShortLink
+from db.base import make_sessionmaker
 
 
 def get_random_string(length) -> str:
@@ -19,11 +20,14 @@ async def get_and_check_random_string(dao: DAO, min_id_len: int) -> str:
     return rnd_id
 
 
-
 def get_config(request: Request) -> Config:
     return request.app.state.config
 
 
-def get_dao(request: Request) -> DAO:
-    return request.state.dao
-
+async def get_dao(request: Request) -> DAO:
+    session = request.app.state.sessionmaker()
+    try:
+        yield DAO(session)
+    finally:
+        await session.commit()
+        await session.close()

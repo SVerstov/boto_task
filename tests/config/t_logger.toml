@@ -4,17 +4,13 @@ level = "INFO"
 
 [base_config]
 level = "INFO"
-rotation="3 MB"
-compression="zip"
+rotation = "3 MB"
+compression = "zip"
 
 
-[bot]
-file = "bot.log"
-level = "INFO"
-
-[aiogram]
+[endpoints]
 # messages fron aiogram lib
-file = "bot.log"
+file = "endpoints.log"
 level = "DEBUG"
 
 [config]
@@ -27,5 +23,5 @@ file = "alembic.log"
 
 [all]
 # collect all log messages.
-level = "ERROR"
+level = "INFO"
 file = "all.log"
