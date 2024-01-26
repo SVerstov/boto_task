@@ -1,9 +1,12 @@
 .PHONY: init migrate migrations downgrade run
 
 
+install:
+	poetry install --no-root
+
 init:
 	poetry shell
-	poetry install --no-root
+
 
 
 migrate:
@@ -18,3 +21,6 @@ downgrade:
 
 run:
 	poetry run python main.py
+
+test:
+	poetry run pytest
