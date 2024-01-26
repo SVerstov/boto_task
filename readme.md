@@ -13,9 +13,10 @@ By default, the project uses `sqlite`, but you can change it to `postgres` in th
 ## File Copying
 
 Copy 2 configuration files. Configure as desired:
+```
 config.toml.dist -> config.toml
 logger.toml.dist -> logger.toml
-
+```
 ## Virtual Environment
 
 It is desirable that `poetry` is already installed in the system.
