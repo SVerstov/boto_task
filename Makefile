@@ -23,4 +23,4 @@ run:
 	poetry run python main.py
 
 test:
-	poetry run pytest
+	poetry run pytest --disable-warnings
