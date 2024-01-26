@@ -1,7 +1,7 @@
 from fastapi import Request, Depends, HTTPException
 from fastapi import status, APIRouter
 from fastapi.responses import JSONResponse, RedirectResponse, Response
-from pydantic import BaseModel, HttpUrl, validator, field_validator
+from pydantic import BaseModel, HttpUrl, field_validator
 
 from config import Config
 from db import ShortLink
@@ -9,10 +9,11 @@ from db.dao import DAO
 from endpoints.utils import get_and_check_random_string, get_config, get_dao
 
 router = APIRouter()
+from loguru import logger
 
 
 class LinkCreate(BaseModel):
-    url: HttpUrl = 'http://example.com'
+    url: HttpUrl
     status_code: int = 301
 
     @field_validator('url')
@@ -47,6 +48,7 @@ async def create_new_link(
         status_code=link_params.status_code,
     )
     dao.session.add(new_link)
+    logger.info(f"Created new link: {new_link}")
     short_url = f'{config.short_links.base_url.rstrip("/")}/l/{new_link.link_id}'
     return JSONResponse(status_code=status.HTTP_201_CREATED,
                         content={"short_url": short_url})
@@ -63,6 +65,7 @@ async def delete_link(link_id: str,
                       dao: DAO = Depends(get_dao)):
     is_deleted = bool(await dao.short_link.delete(ShortLink.link_id == link_id))
     if is_deleted:
+        logger.info(f"Deleted link with id: {link_id}")
         return Response(status_code=204)
     else:
         raise HTTPException(status_code=404, detail="link doesn't exist")
@@ -81,6 +84,7 @@ async def patch_link(link_id: str,
     if not count:
         raise HTTPException(status_code=404, detail="link doesn't exist")
     else:
+        logger.info(f"Edited link with id: {link_id}")
         return Response(status_code=200)
 
 

@@ -29,3 +29,6 @@ class ShortLink(Base):
             "counter": self.counter,
             "status_code": self.status_code,
         }
+
+    def __repr__(self) -> str:
+        return f"<ShortLink link_id={self.link_id}, url={self.url}>"
