@@ -19,6 +19,7 @@ class LinkCreate(BaseModel):
     def convert_url_to_str(cls, value):
         return str(value)
 
+
 class LinkUpdate(BaseModel):
     url: HttpUrl | None
     status_code: int | None
@@ -27,6 +28,7 @@ class LinkUpdate(BaseModel):
     def convert_url_to_str(cls, value):
         if value:
             return str(value)
+
 
 @router.post("/api/links/create")
 async def create_new_link(
@@ -56,7 +58,7 @@ async def get_all(dao: DAO = Depends(get_dao)):
     return [link.to_json() for link in links]
 
 
-@router.delete("/l/{link_id}")
+@router.delete("/api/links/{link_id}")
 async def delete_link(link_id: str,
                       dao: DAO = Depends(get_dao)):
     is_deleted = bool(await dao.short_link.delete(ShortLink.link_id == link_id))
@@ -66,7 +68,7 @@ async def delete_link(link_id: str,
         raise HTTPException(status_code=404, detail="link doesn't exist")
 
 
-@router.patch("/l/{link_id}")
+@router.patch("/api/links/{link_id}")
 async def patch_link(link_id: str,
                      link_params: LinkUpdate,
                      dao: DAO = Depends(get_dao)):

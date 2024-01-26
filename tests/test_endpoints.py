@@ -47,7 +47,7 @@ async def test_create_new_link(client: TestClient):
 @pytest.mark.asyncio
 async def test_update_link(client: TestClient, google_link_id: str):
     update_params = {"url": "http://ya.ru", "status_code": 302}
-    response = client.patch(f"/l/{google_link_id}", json=update_params)
+    response = client.patch(f"/api/links/{google_link_id}", json=update_params)
     assert response.status_code == 200
 
     response = client.get(f"/l/{google_link_id}", allow_redirects=False)
@@ -57,7 +57,7 @@ async def test_update_link(client: TestClient, google_link_id: str):
 
 @pytest.mark.asyncio
 async def test_delete_link(client: TestClient, google_link_id: str):
-    response = client.delete(f"/l/{google_link_id}")
+    response = client.delete(f"/api/links/{google_link_id}")
     assert response.status_code == 204
 
     response = client.get(f"/l/{google_link_id}")
