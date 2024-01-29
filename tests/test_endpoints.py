@@ -54,6 +54,13 @@ async def test_update_link(client: TestClient, google_link_id: str):
     assert response.status_code == 302
     assert str(response.next_request.url).rstrip('/') == "http://ya.ru"
 
+    update_params = {"status_code": 301}
+    response = client.patch(f"/api/links/{google_link_id}", json=update_params)
+    assert response.status_code == 200
+
+    response = client.get(f"/l/{google_link_id}", allow_redirects=False)
+    assert response.status_code == 301
+
 
 @pytest.mark.asyncio
 async def test_delete_link(client: TestClient, google_link_id: str):

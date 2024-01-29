@@ -18,17 +18,19 @@ class LinkCreate(BaseModel):
 
     @field_validator('url')
     def convert_url_to_str(cls, value):
-        return str(value)
-
-
-class LinkUpdate(BaseModel):
-    url: HttpUrl | None
-    status_code: int | None
-
-    @field_validator('url')
-    def convert_url_to_str(cls, value):
         if value:
             return str(value)
+
+    @field_validator('status_code')
+    def validate_status_code(cls, value):
+        if isinstance(value, int) and not (300 <= value <= 308):
+            raise ValueError('Invalid status code')
+        return value
+
+
+class LinkUpdate(LinkCreate):
+    url: HttpUrl | None = None
+    status_code: int | None = None
 
 
 @router.post("/api/links/create")
@@ -39,8 +41,6 @@ async def create_new_link(
         dao: DAO = Depends(get_dao),
 ):
     link_id = await get_and_check_random_string(dao, config.short_links.min_id_len)
-    if not (300 <= link_params.status_code <= 308):
-        raise HTTPException(status_code=400, detail="Invalid status code")
     new_link = ShortLink(
         url=link_params.url,
         link_id=link_id,
@@ -75,11 +75,9 @@ async def delete_link(link_id: str,
 async def patch_link(link_id: str,
                      link_params: LinkUpdate,
                      dao: DAO = Depends(get_dao)):
-    if not (300 <= link_params.status_code <= 308):
-        raise HTTPException(status_code=400, detail="Invalid status code")
     count = await dao.short_link.update_records(
         ShortLink.link_id == link_id,
-        **link_params.model_dump()
+        **link_params.model_dump(exclude_none=True)
     )
     if not count:
         raise HTTPException(status_code=404, detail="link doesn't exist")
