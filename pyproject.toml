@@ -7,7 +7,7 @@ name = "url-shortener"
 dynamic = ["version"]
 description = 'url_shortener_fastapi'
 readme = "README.md"
-requires-python = ">=3.11, <3.12"
+requires-python = "3.12"
 license = "MIT"
 keywords = []
 authors = [
@@ -31,8 +31,11 @@ dependencies = [
     "loguru==0.7.2"
 ]
 
+#[[tool.hatch.envs.pypy]]
+#python = ["pypy3.10"]
 
 [tool.hatch.envs.default]
+python = ["3.11", "3.12", "pypy3.10"]
 dependencies = [
     "coverage[toml]>=6.5",
     "httpx",
@@ -54,6 +57,7 @@ cov = [
 
 
 [tool.black]
-target-version = ["py311"]
+target-version = ["py312"]
 line-length = 127
 skip-string-normalization = true
+

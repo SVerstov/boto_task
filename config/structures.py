@@ -22,9 +22,7 @@ class ConfigBranch(BaseModel):
         for key, value in data.items():
             if isinstance(value, str) and value.startswith("$"):
                 param_name = value.lstrip("$")
-                logger.debug(
-                    f"{cls.__name__}: Getting '{param_name}' from environment variables"
-                )
+                logger.debug(f"{cls.__name__}: Getting '{param_name}' from environment variables")
                 value = os.getenv(param_name)
                 if value is None:
                     logger.warning(f"Can't load '{param_name}' from environment")

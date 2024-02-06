@@ -22,9 +22,7 @@ class InterceptHandler(logging.Handler):
     """Catch standart logging records"""
 
     def emit(self, record):
-        logger.opt(depth=6, exception=record.exc_info).log(
-            record.levelname, record.getMessage()
-        )
+        logger.opt(depth=6, exception=record.exc_info).log(record.levelname, record.getMessage())
 
 
 def setup_logger():

@@ -62,7 +62,7 @@ async def override_get_dao():
         await session.close()
 
 
-@pytest_asyncio.fixture()
-async def dao() -> DAO:
-    async for dao_instance in override_get_dao():
-        yield dao_instance
+# @pytest_asyncio.fixture()
+# async def dao() -> DAO:
+#     async for dao_instance in override_get_dao():
+#         yield dao_instance

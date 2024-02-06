@@ -1,8 +1,9 @@
+from random import randint
+
 import pytest
 import pytest_asyncio
 
 from fastapi.testclient import TestClient
-import httpx
 
 from db import DAO, ShortLink
 
@@ -14,18 +15,15 @@ def google_link_id(client: TestClient) -> str:
     return response.json()['short_url'].split('/')[-1]
 
 
-@pytest_asyncio.fixture
-async def create_10_links(dao: DAO):
+@pytest.fixture
+def create_10_links(client: TestClient):
     for i in range(10):
-        dao.session.add(ShortLink(
-            link_id=f'abc{i}',
-            url="http://google.com",
-        ))
-    await dao.session.commit()
+        link_params = {"url": "http://google.com", "status_code": 301}
+        response = client.post("/api/links/create", json=link_params)
+        assert response.status_code == 201
 
 
-@pytest.mark.asyncio
-async def test_create_new_link(client: TestClient):
+def test_create_new_link(client: TestClient):
     link_params = {"url": "http://google.com", "status_code": 301}
     response = client.post("/api/links/create", json=link_params)
     assert response.status_code == 201
@@ -44,8 +42,7 @@ async def test_create_new_link(client: TestClient):
     assert len(data) == 1
 
 
-@pytest.mark.asyncio
-async def test_update_link(client: TestClient, google_link_id: str):
+def test_update_link(client: TestClient, google_link_id: str):
     update_params = {"url": "http://ya.ru", "status_code": 302}
     response = client.patch(f"/api/links/{google_link_id}", json=update_params)
     assert response.status_code == 200
@@ -62,8 +59,7 @@ async def test_update_link(client: TestClient, google_link_id: str):
     assert response.status_code == 301
 
 
-@pytest.mark.asyncio
-async def test_delete_link(client: TestClient, google_link_id: str):
+def test_delete_link(client: TestClient, google_link_id: str):
     response = client.delete(f"/api/links/{google_link_id}")
     assert response.status_code == 204
 
@@ -71,31 +67,31 @@ async def test_delete_link(client: TestClient, google_link_id: str):
     assert response.status_code == 404
 
 
-@pytest.mark.asyncio
-async def test_not_found(client: TestClient):
+def test_not_found(client: TestClient):
     response = client.get('/l/ABCD')
     assert response.status_code == 404
 
 
-@pytest.mark.asyncio
-async def test_counter(client: TestClient, dao: DAO, google_link_id):
-    response = client.get(f"/l/{google_link_id}")
-    response = client.get(f"/l/{google_link_id}")
-    obj = await dao.short_link.get_by_link_id(google_link_id)
-    assert obj.counter == 2
+def test_counter(client: TestClient, google_link_id):
+    for _ in range(3):
+        response = client.get(f"/l/{google_link_id}", allow_redirects=False)
+        assert response.status_code == 301
+
+    response = client.get(f"/api/links/{google_link_id}")
+    assert response.status_code == 200
+    data = response.json()
+    assert data.get('counter') == 3
 
 
-@pytest.mark.asyncio
-async def test_get_all(client: TestClient, create_10_links):
+@pytest.mark.usefixtures("create_10_links")
+def test_get_all(client: TestClient):
     response = client.get("/api/links/all")
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 10
 
 
-@pytest.mark.asyncio
-async def test_create_bad_url(client: TestClient, create_10_links):
+def test_create_bad_url(client: TestClient):
     link_params = {"url": "google.com", "status_code": 301}
     response = client.post("/api/links/create", json=link_params)
     assert response.status_code == 422
-

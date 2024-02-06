@@ -24,7 +24,6 @@ class BaseDAO(Generic[Model]):
         self.model = model
         self.session = session
 
-
     async def get_many(
         self,
         *whereclauses: ClauseElement,
@@ -177,9 +176,7 @@ class BaseDAO(Generic[Model]):
         :return: number of updated rows
         """
         if not values or not whereclauses:
-            raise AttributeError(
-                "Func need at least one whereclaus and one key-value pair to update"
-            )
+            raise AttributeError("Func need at least one whereclaus and one key-value pair to update")
 
         stmt = update(self.model).where(*whereclauses).values(**values)
         res = await self.session.execute(stmt)

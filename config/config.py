@@ -24,10 +24,7 @@ class DBConfig(ConfigBranch):
         if self.type == "sqlite":
             return f"{self.type}+aiosqlite:///{self.name}"
         else:
-            return (
-                f"{self.type}+{self.connector}://"
-                f"{self.login}:{self.password}@{self.host_and_port}/{self.name}"
-            )
+            return f"{self.type}+{self.connector}://" f"{self.login}:{self.password}@{self.host_and_port}/{self.name}"
 
 
 class Config(ConfigBase):

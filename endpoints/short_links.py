@@ -50,8 +50,7 @@ async def create_new_link(
     dao.session.add(new_link)
     logger.info(f"Created new link: {new_link}")
     short_url = f'{config.short_links.base_url.rstrip("/")}/l/{new_link.link_id}'
-    return JSONResponse(status_code=status.HTTP_201_CREATED,
-                        content={"short_url": short_url})
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"short_url": short_url})
 
 
 @router.get("/api/links/all")
@@ -60,9 +59,14 @@ async def get_all(dao: DAO = Depends(get_dao)):
     return [link.to_json() for link in links]
 
 
+@router.get("/api/links/{link_id}")
+async def get_one(link_id: str, dao: DAO = Depends(get_dao)):
+    link = await dao.short_link.get_by_link_id(link_id)
+    return link.to_json()
+
+
 @router.delete("/api/links/{link_id}")
-async def delete_link(link_id: str,
-                      dao: DAO = Depends(get_dao)):
+async def delete_link(link_id: str, dao: DAO = Depends(get_dao)):
     is_deleted = bool(await dao.short_link.delete(ShortLink.link_id == link_id))
     if is_deleted:
         logger.info(f"Deleted link with id: {link_id}")
@@ -72,13 +76,9 @@ async def delete_link(link_id: str,
 
 
 @router.patch("/api/links/{link_id}")
-async def patch_link(link_id: str,
-                     link_params: LinkUpdate,
-                     dao: DAO = Depends(get_dao)):
-    count = await dao.short_link.update_records(
-        ShortLink.link_id == link_id,
-        **link_params.model_dump(exclude_none=True)
-    )
+async def patch_link(link_id: str, link_params: LinkUpdate, dao: DAO = Depends(get_dao)):
+    count = await dao.short_link.update_records(ShortLink.link_id == link_id,
+                                                **link_params.model_dump(exclude_none=True))
     if not count:
         raise HTTPException(status_code=404, detail="link doesn't exist")
     else:
@@ -87,8 +87,7 @@ async def patch_link(link_id: str,
 
 
 @router.get("/l/{link_id}")
-async def short_link_redirect(link_id: str,
-                              dao: DAO = Depends(get_dao)):
+async def short_link_redirect(link_id: str, dao: DAO = Depends(get_dao)):
     link_obj = await dao.short_link.get_by_link_id(link_id=link_id)
     if link_obj:
         link_obj.counter += 1

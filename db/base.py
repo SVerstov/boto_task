@@ -19,11 +19,13 @@ class Base(DeclarativeBase):
 
 
 def make_sessionmaker(db_config: DBConfig) -> async_sessionmaker[AsyncSession]:
-    conf=dict(url=make_url(db_config.uri),
+    conf = dict(
+        url=make_url(db_config.uri),
         echo=db_config.show_echo,
         pool_size=db_config.pool_size,
-        max_overflow=db_config.max_overflow)
-    conf = {k:v for k,v in conf.items() if v}
+        max_overflow=db_config.max_overflow,
+    )
+    conf = {k: v for k, v in conf.items() if v}
     engine = create_async_engine(**conf)
     return async_sessionmaker(
         bind=engine,

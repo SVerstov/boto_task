@@ -2,7 +2,9 @@ from functools import wraps
 
 from db.base import make_sessionmaker
 from db import DAO
+
 # todo del??
+
 
 def add_dao(func):
     """Оборачивает функцию в контекстный менеджер,
@@ -19,4 +21,5 @@ def add_dao(func):
                 result = await func(*args, **kwargs)
                 await session.commit()
                 return result
+
     return wrapper
