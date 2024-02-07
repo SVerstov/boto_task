@@ -10,9 +10,9 @@ logger = getLogger(__name__)
 
 
 class ShortLinksDAO(BaseDAO[ShortLink]):
-    def __init__(self, session: AsyncSession):
-        super().__init__(ShortLink, session)
+  def __init__(self, session: AsyncSession):
+    super().__init__(ShortLink, session)
 
-    async def get_by_link_id(self, link_id: str) -> ShortLink | None:
-        result = await self.session.execute(select(ShortLink).where(ShortLink.link_id == link_id))
-        return result.scalar_one_or_none()
+  async def get_by_link_id(self, link_id: str) -> ShortLink | None:
+    result = await self.session.execute(select(ShortLink).where(ShortLink.link_id == link_id))
+    return result.scalar_one_or_none()

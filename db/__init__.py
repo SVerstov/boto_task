@@ -1,2 +1,2 @@
-from .models import *
 from .dao import DAO
+from .models import *

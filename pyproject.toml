@@ -7,57 +7,144 @@ name = "url-shortener"
 dynamic = ["version"]
 description = 'url_shortener_fastapi'
 readme = "README.md"
-requires-python = "3.12"
+requires-python = ">=3.10, < 3.13"
 license = "MIT"
 keywords = []
 authors = [
-    { name = "Seliverstov", email = "seliverstov@boto.education" },
+  { name = "Seliverstov", email = "seliverstov@boto.education" },
 ]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-    "fastapi==0.109.0",
-    "uvicorn==0.27.0",
-    "sqlalchemy==2.0.25",
-    "pydantic==2.5.3",
-    "alembic==1.13.1",
-    "aiosqlite==0.19.0",
-    "loguru==0.7.2"
+  "fastapi==0.109.0",
+  "uvicorn==0.27.0",
+  "sqlalchemy==2.0.25",
+  "pydantic==2.5.3",
+  "alembic==1.13.1",
+  "aiosqlite==0.19.0",
+  "loguru==0.7.2"
 ]
 
-#[[tool.hatch.envs.pypy]]
-#python = ["pypy3.10"]
+
 
 [tool.hatch.envs.default]
 python = ["3.11", "3.12", "pypy3.10"]
 dependencies = [
-    "coverage[toml]>=6.5",
-    "httpx",
-    "pytest_asyncio",
-    "pytest",
+  "coverage[toml]>=6.5",
+  "httpx",
+  "pytest_asyncio",
+  "pytest",
 ]
 
 [tool.hatch.envs.default.scripts]
+app = "python main.py"
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"
 cov-report = [
-    "- coverage combine",
-    "coverage report",
+  "- coverage combine",
+  "coverage report",
 ]
 cov = [
-    "test-cov",
-    "cov-report",
+  "test-cov",
+  "cov-report",
 ]
 
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+  "ruff>=0.0.243, <0.2.0",
+  "ansible-lint",
+  "mypy"
+]
 
-[tool.black]
-target-version = ["py312"]
+[tool.hatch.envs.lint.scripts]
+ci = "ruff check . --extend-exclude=eXpeditiousBot/plugins --select=E9,F63,F7,F82 --statistics"
+py = "ruff check --show-source {args:}"
+typing = "mypy --install-types --non-interactive {args:src/_ tests}"
+ansible = "ansible-lint"
+fmt = [
+  "ruff --fix {args:.}",
+  "style",
+]
+all = [
+  "style",
+  "typing",
+]
+
+[tool.ruff]
+target-version = "py311"
+indent-width = 2
 line-length = 127
-skip-string-normalization = true
+exclude = [
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".mypy_cache",
+  ".pytype",
+  ".ruff_cache",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "build",
+  "dist",
+  "venv"
+]
+select = [
+  "A",
+  "ARG",
+  "B",
+  "C",
+  "DTZ",
+  "E",
+  "EM",
+  "F",
+  "FBT",
+  "I",
+  "ICN",
+  "ISC",
+  "N",
+  "PLC",
+  "PLE",
+  "PLR",
+  "PLW",
+  "Q",
+  "RUF",
+  "S",
+  "T",
+  "TID",
+  "UP",
+  "W",
+  "YTT",
+]
+ignore = [
+  # Allow non-abstract empty methods in abstract base classes
+  "B027",
+  # Allow boolean positional values in function calls, like `dict.get(... True)`
+  "FBT003",
+  # Ignore checks for possible passwords
+  "S105", "S106", "S107",
+  # Ignore complexity
+  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+]
+unfixable = [
+  # Don't touch unused imports
+  "F401",
+]
 
+[tool.ruff.isort]
+known-first-party = ["_"]
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252"]

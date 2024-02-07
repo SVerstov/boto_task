@@ -5,12 +5,11 @@ from fastapi import Request
 
 from config import Config
 from db import DAO, ShortLink
-from db.base import make_sessionmaker
 
 
 def get_random_string(length) -> str:
     symbols = string.ascii_letters + string.digits
-    return ''.join(random.choice(symbols) for i in range(length))
+    return "".join(random.choice(symbols) for i in range(length))  # noqa: S311
 
 
 async def get_and_check_random_string(dao: DAO, min_id_len: int) -> str:
