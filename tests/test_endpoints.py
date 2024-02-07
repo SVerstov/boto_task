@@ -88,7 +88,6 @@ def test_get_all(client: TestClient):
   assert len(data) == 10
 
 
-
 def test_invalid_input(client: TestClient, google_link_id):
   response = client.post("/api/links/", json={"url": "https://example.com", "status_code": 299})
   assert response.status_code == 422
@@ -96,12 +95,14 @@ def test_invalid_input(client: TestClient, google_link_id):
   response = client.post("/api/links/", json={"url": "wrong_url", "status_code": 299})
   assert response.status_code == 422
 
+  response = client.post("/api/links/", json={"bad_field": "foo", "bad2": "buzz"})
+  assert response.status_code == 422
+
   response = client.patch("/api/links/{google_link_id}", json={"url": "wrong_url"})
   assert response.status_code == 422
 
-  response = client.patch("/api/links/{google_link_id}")
+  response = client.patch("/api/links/{google_link_id}", json={})
   assert response.status_code == 422
 
   response = client.patch("/api/links/{google_link_id}", json={"bad_field": "foo"})
   assert response.status_code == 422
-

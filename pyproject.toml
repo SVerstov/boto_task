@@ -38,7 +38,7 @@ python = ["3.11", "3.12", "pypy3.10"]
 dependencies = [
   "coverage[toml]>=6.5",
   "httpx",
-  "pytest_asyncio",
+  "pytest-asyncio",
   "pytest",
 ]
 
@@ -66,6 +66,7 @@ dependencies = [
 [tool.hatch.envs.lint.scripts]
 ci = "ruff check . --extend-exclude=eXpeditiousBot/plugins --select=E9,F63,F7,F82 --statistics"
 py = "ruff check --show-source {args:}"
+test = "pytest"
 typing = "mypy --install-types --non-interactive {args:src/_ tests}"
 ansible = "ansible-lint"
 fmt = [
