@@ -1,7 +1,6 @@
 from random import randint
 
 import pytest
-import pytest_asyncio
 
 from fastapi.testclient import TestClient
 
@@ -31,7 +30,7 @@ def test_create_new_link(client: TestClient):
     link_id = response.json()['short_url'].split('/')[-1]
     assert response.status_code == 201
 
-    response = client.get(f"/l/{link_id}", allow_redirects=False)
+    response = client.get(f"/{link_id}", allow_redirects=False)
     assert response.status_code == 301
     assert str(response.next_request.url).rstrip('/') == "http://google.com"
 
@@ -47,7 +46,7 @@ def test_update_link(client: TestClient, google_link_id: str):
     response = client.patch(f"/api/links/{google_link_id}", json=update_params)
     assert response.status_code == 200
 
-    response = client.get(f"/l/{google_link_id}", allow_redirects=False)
+    response = client.get(f"/{google_link_id}", allow_redirects=False)
     assert response.status_code == 302
     assert str(response.next_request.url).rstrip('/') == "http://ya.ru"
 
@@ -55,7 +54,7 @@ def test_update_link(client: TestClient, google_link_id: str):
     response = client.patch(f"/api/links/{google_link_id}", json=update_params)
     assert response.status_code == 200
 
-    response = client.get(f"/l/{google_link_id}", allow_redirects=False)
+    response = client.get(f"/{google_link_id}", allow_redirects=False)
     assert response.status_code == 301
 
 
@@ -63,18 +62,18 @@ def test_delete_link(client: TestClient, google_link_id: str):
     response = client.delete(f"/api/links/{google_link_id}")
     assert response.status_code == 204
 
-    response = client.get(f"/l/{google_link_id}")
+    response = client.get(f"/{google_link_id}")
     assert response.status_code == 404
 
 
 def test_not_found(client: TestClient):
-    response = client.get('/l/ABCD')
+    response = client.get('/ABCD')
     assert response.status_code == 404
 
 
 def test_counter(client: TestClient, google_link_id):
     for _ in range(3):
-        response = client.get(f"/l/{google_link_id}", allow_redirects=False)
+        response = client.get(f"/{google_link_id}", allow_redirects=False)
         assert response.status_code == 301
 
     response = client.get(f"/api/links/{google_link_id}")

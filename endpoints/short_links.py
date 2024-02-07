@@ -49,7 +49,7 @@ async def create_new_link(
     )
     dao.session.add(new_link)
     logger.info(f"Created new link: {new_link}")
-    short_url = f'{config.short_links.base_url.rstrip("/")}/l/{new_link.link_id}'
+    short_url = f'{config.short_links.base_url.rstrip("/")}/{new_link.link_id}'
     return JSONResponse(status_code=status.HTTP_201_CREATED, content={"short_url": short_url})
 
 
@@ -86,7 +86,7 @@ async def patch_link(link_id: str, link_params: LinkUpdate, dao: DAO = Depends(g
         return Response(status_code=200)
 
 
-@router.get("/l/{link_id}")
+@router.get("/{link_id}")
 async def short_link_redirect(link_id: str, dao: DAO = Depends(get_dao)):
     link_obj = await dao.short_link.get_by_link_id(link_id=link_id)
     if link_obj:
