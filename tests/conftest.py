@@ -1,30 +1,24 @@
-import os
-from pathlib import Path
-
 import pytest
-import pytest_asyncio
 from starlette.testclient import TestClient
 
-from config import Config
-from dao import DAO
-from endpoints.utils import get_dao
+from src.config import Config
 from main import app
-
-if os.getcwd().endswith("/tests/"):
-  conf_path = Path("config/t_config.toml")
-else:
-  conf_path = Path(os.getcwd(), "tests/config/t_config.toml")
-test_config = Config(conf_path)
+from src.dao import setup_db, get_conn
 
 
-@pytest.fixture(scope="session")
-def config() -> Config:
-  return test_config
+@pytest.fixture()
+def config(tmp_path) -> Config:
+  return Config(
+    id_len=5,
+    base_url="http://127.0.0.1:8000",
+    db_name=tmp_path / "testdb.sqlite"
+  )
 
 
 @pytest.fixture(autouse=True)
-def prepare_tables():
-  DAO(test_config).init_tables()
+def prepare_tables(config: Config):
+  with get_conn(config.db_name) as conn:
+    setup_db(conn)
 
 
 @pytest.fixture(autouse=True)
@@ -35,4 +29,5 @@ def prepare_app(config: Config):
 @pytest.fixture()
 def client() -> TestClient:
   return TestClient(app)
+
 

@@ -278,5 +278,5 @@ fabric.properties
 
 # Especially for the project
 
-config/*.toml
+#config/*.toml
 db.sqlite
