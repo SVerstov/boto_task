@@ -42,7 +42,7 @@ dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
-app = "python ./src/main.py"
+app = "python -m main"
 test = "pytest {args:tests}"
 test-cov = "coverage run -m pytest {args:tests}"
 cov-report = [

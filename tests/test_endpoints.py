@@ -62,6 +62,7 @@ def test_not_found(client: TestClient):
   json = {"url": "http://test.com", "status_code": 302}
   assert client.patch("/api/links/non_exist", json=json).status_code == 404
 
+
 def test_counter(client: TestClient, google_link_id):
   for _ in range(3):
     response = client.get(f"/{google_link_id}", follow_redirects=False)
@@ -79,6 +80,7 @@ def test_get_all(client: TestClient):
   assert response.status_code == 200
   data = response.json()
   assert len(data) == 10
+
 
 def test_invalid_input(client: TestClient, google_link_id):
   response = client.post("/api/links/", json={"url": "https://example.com", "status_code": 299})

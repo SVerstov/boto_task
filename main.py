@@ -10,7 +10,7 @@ from src.endpoints import links_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-  from config import config
+  from src.config import config
   app.state.config = config
   with dao.get_conn(config.db_name) as conn:
     dao.setup_db(conn)
