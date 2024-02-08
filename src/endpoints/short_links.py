@@ -1,13 +1,16 @@
 # ruff: noqa: B008
 
+from logging import getLogger
+
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse
-from loguru import logger
 from starlette.responses import RedirectResponse, Response
 
 from src import dao
 from src.config import Config
 from src.endpoints.validators import LinkCreate
+
+logger = getLogger(__name__)
 
 
 def get_config(request: Request) -> Config:
@@ -46,6 +49,7 @@ def get_one(link_id: str, config: Config = Depends(get_config)):
     return link
   else:
     raise HTTPException(status_code=404, detail="Link not found")
+
 
 @links_router.delete("/api/links/{link_id}")
 def delete_link(link_id: str, config: Config = Depends(get_config)):

@@ -1,6 +1,0 @@
-[short_links]
-id_len = 5
-base_url = "http://127.0.0.1:8000"
-
-[db] # for sqlite
-path = 'db.sqlite'
