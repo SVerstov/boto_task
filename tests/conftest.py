@@ -1,9 +1,9 @@
 import pytest
 from starlette.testclient import TestClient
 
-from src.config import Config
 from main import app
-from src.dao import setup_db, get_conn
+from src.config import Config
+from src.dao import get_conn, setup_db
 
 
 @pytest.fixture()

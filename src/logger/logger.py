@@ -1,8 +1,8 @@
 import logging
 import sys
-import tomllib
 from pathlib import Path
 
+import tomllib
 from loguru import logger
 
 

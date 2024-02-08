@@ -1,12 +1,12 @@
 # ruff: noqa: B008
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from loguru import logger
 from starlette.responses import RedirectResponse, Response
 
-from src.config import Config
 from src import dao
+from src.config import Config
 from src.endpoints.validators import LinkCreate
 
 

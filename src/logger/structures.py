@@ -1,8 +1,8 @@
 import os
-import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
+import tomllib
 from loguru import logger
 from pydantic import BaseModel
 from pydantic.functional_validators import model_validator

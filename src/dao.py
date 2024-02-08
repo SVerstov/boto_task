@@ -20,7 +20,7 @@ sqlite3.register_converter("DATETIME", _convert_datetime_int)
 
 def setup_db(conn: Connection):
   conn.execute(
-    f"""
+    """
       CREATE TABLE IF NOT EXISTS links (
         id INTEGER PRIMARY KEY,
         link_id TEXT UNIQUE,
