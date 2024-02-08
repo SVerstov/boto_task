@@ -68,7 +68,7 @@ ci = "ruff check . --extend-exclude=eXpeditiousBot/plugins --select=E9,F63,F7,F8
 py = "ruff check --show-source {args:}"
 test = "pytest"
 typing = "mypy --install-types --non-interactive {args:src/_ tests}"
-ansible = "ansible-lint"
+#ansible = "ansible-lint"
 fmt = [
   "ruff --fix {args:.}",
   "style",

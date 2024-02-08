@@ -1,30 +1,15 @@
+from pathlib import Path
+
 from config.structures import ConfigBase, ConfigBranch
 
 
 class ShortLinksConfig(ConfigBranch):
-  min_id_len: int
+  id_len: int
   base_url: str
 
 
 class DBConfig(ConfigBranch):
-  type: str
-  name: str
-
-  connector: str | None = None
-  host_and_port: str | None = None
-  login: str | None = None
-  password: str | None = None
-  autoflush: bool = True
-  show_echo: bool = False
-  pool_size: int | None = None
-  max_overflow: int | None = None
-
-  @property
-  def uri(self) -> str:
-    if self.type == "sqlite":
-      return f"{self.type}+aiosqlite:///{self.name}"
-    else:
-      return f"{self.type}+{self.connector}://{self.login}:{self.password}@{self.host_and_port}/{self.name}"
+  path: str
 
 
 class Config(ConfigBase):

@@ -4,19 +4,8 @@ import string
 from fastapi import Request
 
 from config import Config
-from db import DAO, ShortLink
+from dao import DAO
 
-
-def get_random_string(length) -> str:
-    symbols = string.ascii_letters + string.digits
-    return "".join(random.choice(symbols) for i in range(length))  # noqa: S311
-
-
-async def get_and_check_random_string(dao: DAO, min_id_len: int) -> str:
-    rnd_id = get_random_string(min_id_len)
-    if await dao.short_link.count(ShortLink.link_id == rnd_id):
-        await get_and_check_random_string(dao=dao, min_id_len=min_id_len + 1)
-    return rnd_id
 
 
 def get_config(request: Request) -> Config:
@@ -24,9 +13,4 @@ def get_config(request: Request) -> Config:
 
 
 async def get_dao(request: Request) -> DAO:
-    session = request.app.state.sessionmaker()
-    try:
-        yield DAO(session)
-    finally:
-        await session.commit()
-        await session.close()
+    return request.app.state.dao

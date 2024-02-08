@@ -3,11 +3,13 @@ from fastapi import FastAPI, Request
 from loguru import logger
 
 from config import Config, setup_logger
-from db.base import make_sessionmaker
-from endpoints.short_links import router
+
+from dao import DAO
+from endpoints.short_links import links_router
 
 app = FastAPI()
-app.include_router(router)
+app.include_router(links_router)
+
 
 
 @app.middleware("http")
@@ -23,8 +25,8 @@ async def log_stuff(request: Request, call_next):
 def startup_event():
   setup_logger()
   config = Config()
+  DAO(config).init_tables()
   app.state.config = config
-  app.state.sessionmaker = make_sessionmaker(config.db)
 
 
 if __name__ == "__main__":

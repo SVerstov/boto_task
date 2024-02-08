@@ -1,22 +1,6 @@
 [short_links]
-min_id_len = 5
+id_len = 5
 base_url = "http://127.0.0.1:8000"
 
 [db] # for sqlite
-type = "sqlite"
-name = ":memory:"
-autoflush = true
-show_echo = false
-
-#[db] # for postgres
-#type = "postgresql"
-#connector = "asyncpg"
-#host_and_port = "postgres"
-#name = "test_db"
-#autiflush=false
-#login = "postgres"make
-#password = "superpass"
-#show_echo = true  # if enable shows all SQL queries and results
-#pool_size=5
-#max_overflow=10
-
+path = ":memory:"
