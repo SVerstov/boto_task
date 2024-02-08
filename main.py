@@ -13,6 +13,7 @@ from src.endpoints import links_router
 logger = logging.getLogger()
 from ecs_logging import StdlibFormatter as JSONFormatter
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
   from src.config import config
