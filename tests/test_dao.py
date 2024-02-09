@@ -72,7 +72,7 @@ def test_update(config: Config):
     pass
 
 
-def test_db_error(config: Config):
+def test_duplicate_error(config: Config):
   with pytest.raises(sqlite3.IntegrityError):
     with dao.get_conn(config.db_name) as conn:
       for _ in range(2):
