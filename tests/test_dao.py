@@ -1,3 +1,5 @@
+import sqlite3
+
 import pytest
 
 from src import dao
@@ -68,3 +70,15 @@ def test_update(config: Config):
     assert res["url"] == new_url
     assert res["status_code"] == 302
     pass
+
+
+def test_db_error(config: Config):
+  with pytest.raises(sqlite3.IntegrityError):
+    with dao.get_conn(config.db_name) as conn:
+      for _ in range(2):
+        dao.create(
+          conn=conn,
+          link_id=f"duplicate_id",
+          url="http://example.com",
+          status_code=301
+        )
