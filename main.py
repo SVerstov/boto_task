@@ -1,17 +1,16 @@
 import logging
-import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, Request
 
-from src.config import Config
 from src import dao
+from src.config import Config
 from src.endpoints import links_router
+from ecs_logging import StdlibFormatter as JSONFormatter
 
 logger = logging.getLogger()
-from ecs_logging import StdlibFormatter as JSONFormatter
 
 
 @asynccontextmanager
@@ -21,7 +20,7 @@ async def lifespan(app: FastAPI):
   app.state.config = config
   with dao.get_conn(config.db_name) as conn:
     dao.setup_db(conn)
-    yield
+  yield
 
 
 app = FastAPI(lifespan=lifespan)
@@ -44,7 +43,6 @@ def init_logging(config: Config):
   stderr_handler.setFormatter(
     logging.Formatter("[%(asctime)-10s] %(name)-8s [%(filename)s:%(lineno)s]: %(levelname)-6s %(message)s")
   )
-
   file_handler = logging.handlers.RotatingFileHandler(str(log_path / "boto.json.log"))
   file_handler.setFormatter(JSONFormatter())
   logger.addHandler(file_handler)

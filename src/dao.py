@@ -34,7 +34,6 @@ def setup_db(conn: Connection):
   conn.commit()
 
 
-@staticmethod
 def dict_factory(cursor, row):
   d = {}
   for idx, col in enumerate(cursor.description):
@@ -111,7 +110,7 @@ def get_conn(db_filename: Path | str):
     yield conn
     conn.commit()
   except Exception:
-    # todo what we shpould catch here?
+    # todo what we should catch here?
     conn.rollback()
     raise
   finally:
